@@ -1,0 +1,2 @@
+-run npm install
+-run node sources/npidb.js
