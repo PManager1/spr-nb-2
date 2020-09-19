@@ -103,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-10.csv' ,
+        path: './results/results-CA-12.csv' ,
         append: true
     });
 
@@ -143,8 +143,10 @@ const getData = async () => {
                     const otherElement = $('div.panelx-body').last();
 
                      // $('div.panelx-body').last().find('table > tbody > tr:nth-child(2) > td').last().text().trim();
-                    const LBNLegalBusinessName = otherElement.find('table > tbody > tr:nth-child(2) > td').last().text().trim();
+                    let LBNLegalBusinessName = otherElement.find('table > tbody > tr:nth-child(2) > td').last().text().trim();
                      
+                     LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
+
                     //          $('div.panelx-body').last().find('table > tbody > tr:nth-child(4) > td').last().text().trim();
                     // const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim(); 
