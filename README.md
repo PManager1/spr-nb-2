@@ -2,6 +2,11 @@
 -run node sources/npidb.js
 
 
+$('td:contains("Authorized official")').next().text(); 
+
+
+
+
 $('div.panelx-body').last().find('table > tbody > tr:nth-child(4) > td').last().text().trim();
 
 function toTitleCase(str) {
@@ -21,4 +26,4 @@ $(".test td:contains(Heading 1)")
         return $(this).text() + " Hello"
     });
 
-$('div.panelx-body').last().find('table > tbody >  td:contains(Authorized official)').text().trim();    
+$('div.panelx-body').last().find('table > tbody >  td:contains(Authorized official)').text().trim();    # npi-spr
