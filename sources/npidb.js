@@ -16,6 +16,13 @@ function toTitleCase(str) {
     );
 }
 
+function titleCase(str) {
+    return str.toLowerCase().split(' ').map(function(val) { return val.replace(val[0], val[0].toUpperCase()); }).join(' ');
+
+   }
+
+   
+
 const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
     let listings = [];
 
@@ -78,9 +85,7 @@ const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
         console.log(error);
     }
 };
-function abc () {
 
-}
 const getData = async () => {
     let listings = fs.readFileSync('./results/listings.txt').toString().split("\n");
     let header = [
@@ -98,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA.csv' ,
+        path: './results/results-CA-4.csv' ,
         append: true
     });
 
@@ -124,11 +129,11 @@ const getData = async () => {
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
                     let $ = cheerio.load(bodyHTML);
 
-                    const temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
+                    let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
+                    temp_companyName = temp_companyName.toString(); 
+                    
                     const companyName = toTitleCase(temp_companyName);
                     
-                    console.log(' 126 - lowerCompanyName = ' , lowerCompanyName); 
-
                     const description = $('.page-header > p').text().trim();
                     const address = $('address').text().trim();
                     const phone = $("span[itemprop='telephone']").text().trim();
@@ -141,7 +146,19 @@ const getData = async () => {
                     const LBNLegalBusinessName = otherElement.find('table > tbody > tr:nth-child(2) > td').last().text().trim();
                      
                     //          $('div.panelx-body').last().find('table > tbody > tr:nth-child(4) > td').last().text().trim();
-                    const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
+                    // const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
+                    const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim(); 
+                    
+                    // console.log(' 144-  temp_authorizedOfficial = ', temp_authorizedOfficial ); 
+
+                    // const authorizedOfficial = toTitleCase(temp_authorizedOfficial);
+                    // const authorizedOfficial = temp_authorizedOfficial;
+
+                    const authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
+                    
+                    // const authorizedOfficial = titleCase(temp_authorizedOfficial);
+                    console.log('158-  authorizedOfficial = ', authorizedOfficial ); 
+                    
                     const enumerationDate = otherElement.find('table > tbody > tr:nth-child(7) > td').last().text().trim();
                     const lastUpdated = otherElement.find('table > tbody > tr:nth-child(8) > td').last().text().trim();
 
@@ -159,7 +176,7 @@ const getData = async () => {
                     ]
 
                     csvWriter.writeRecords([row])       // returns a promise
-                        .then(() => console.log('add item'))
+                        .then(() => console.log('add item', [row]))
                         .catch(() => console.error());
 
                     await page.waitFor(2000)
