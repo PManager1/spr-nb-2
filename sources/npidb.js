@@ -4,7 +4,17 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 
-let listingUrl = 'https://npidb.org/organizations/suppliers/department-of-veterans-affairs-va-pharmacy_332100000x';
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
+
+
+function toTitleCase(str) {
+    return str.replace(
+        /\w\S*/g,
+        function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    );
+}
 
 const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
     let listings = [];
@@ -68,7 +78,9 @@ const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
         console.log(error);
     }
 };
+function abc () {
 
+}
 const getData = async () => {
     let listings = fs.readFileSync('./results/listings.txt').toString().split("\n");
     let header = [
@@ -112,14 +124,23 @@ const getData = async () => {
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
                     let $ = cheerio.load(bodyHTML);
 
-                    const companyName = $('.page-header > h1').text().trim();
+                    const temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
+                    const companyName = toTitleCase(temp_companyName);
+                    
+                    console.log(' 126 - lowerCompanyName = ' , lowerCompanyName); 
+
                     const description = $('.page-header > p').text().trim();
                     const address = $('address').text().trim();
                     const phone = $("span[itemprop='telephone']").text().trim();
                     const website = $("span[itemprop='website']").text().trim();
 
+                    
                     const otherElement = $('div.panelx-body').last();
+
+                     // $('div.panelx-body').last().find('table > tbody > tr:nth-child(2) > td').last().text().trim();
                     const LBNLegalBusinessName = otherElement.find('table > tbody > tr:nth-child(2) > td').last().text().trim();
+                     
+                    //          $('div.panelx-body').last().find('table > tbody > tr:nth-child(4) > td').last().text().trim();
                     const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
                     const enumerationDate = otherElement.find('table > tbody > tr:nth-child(7) > td').last().text().trim();
                     const lastUpdated = otherElement.find('table > tbody > tr:nth-child(8) > td').last().text().trim();
