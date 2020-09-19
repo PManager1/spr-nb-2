@@ -4,7 +4,7 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
+let listingUrl = 'https://npidb.org/organizations/suppliers/department-of-veterans-affairs-va-pharmacy_332100000x/';
 
 
 function toTitleCase(str) {
@@ -103,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-12.csv' ,
+        path: './results/results-CA-14.csv' ,
         append: true
     });
 
@@ -135,7 +135,17 @@ const getData = async () => {
                     const companyName = toTitleCase(temp_companyName);
                     
                     const description = $('.page-header > p').text().trim();
-                    const address = $('address').text().trim();
+                    let address = $('address').text().trim();
+                    //    address = (JSON.parse('"' + address + '"'));
+                       
+                       address = address.replace(/(\r\n|\n|\r)/gm," ");
+                       address = (JSON.parse('"' + address + '"'));
+
+                    //    address = titleCase(address );
+
+                    console.log( '139- address = ' , address ); 
+
+                    // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
                     const website = $("span[itemprop='website']").text().trim();
 
