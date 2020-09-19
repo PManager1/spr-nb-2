@@ -4,7 +4,7 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 
-let listingUrl = 'https://npidb.org/organizations/suppliers/department-of-veterans-affairs-va-pharmacy_332100000x/';
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
 
 function toTitleCase(str) {
@@ -103,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-14.csv' ,
+        path: './results/results-CA-15.csv' ,
         append: true
     });
 
@@ -138,9 +138,10 @@ const getData = async () => {
                     let address = $('address').text().trim();
                     //    address = (JSON.parse('"' + address + '"'));
                        
-                       address = address.replace(/(\r\n|\n|\r)/gm," ");
-                       address = (JSON.parse('"' + address + '"'));
+                   address = address.replace(/(\r\n|\n|\r)/gm," ");
 
+                   address = address.replace(/[^\x00-\x7F]/g, "");
+                   
                     //    address = titleCase(address );
 
                     console.log( '139- address = ' , address ); 
@@ -149,40 +150,23 @@ const getData = async () => {
                     const phone = $("span[itemprop='telephone']").text().trim();
                     const website = $("span[itemprop='website']").text().trim();
 
-                    
-                    const otherElement = $('div.panelx-body').last();
+                    let LBNLegalBusinessName = $('td:contains("LBN Legal business name")').next().text().trim();
 
-                     // $('div.panelx-body').last().find('table > tbody > tr:nth-child(2) > td').last().text().trim();
-                    let LBNLegalBusinessName = otherElement.find('table > tbody > tr:nth-child(2) > td').last().text().trim();
-                     
                      LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
 
-                    //          $('div.panelx-body').last().find('table > tbody > tr:nth-child(4) > td').last().text().trim();
-                    // const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
-                    const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim(); 
-                    
-                    // const authorizedOfficial = toTitleCase(temp_authorizedOfficial);
-                    // const authorizedOfficial = temp_authorizedOfficial;
-
+                    const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
                     let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
-                        // authorizedOfficial = toTitleCase(temp_authorizedOfficial);
 
-                    // const authorizedOfficial = titleCase(temp_authorizedOfficial);
-                    console.log('158-  authorizedOfficial = ', authorizedOfficial ); 
+                    console.log('158-  authorizedOfficial = ', authorizedOfficial );
             
                     authorizedOfficial = titleCase(authorizedOfficial );
                     console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
-                    // let enumerationDate = otherElement.find('table > tbody > tr:nth-child(7) > td').last().text().trim();
-
-                    let enumerationDate = $('td:contains("Enumeration date")').next().text().trim(); 
+                    let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
                     enumerationDate  = enumerationDate.slice(0,10);
 
-                    // const lastUpdated = otherElement.find('table > tbody > tr:nth-child(8) > td').last().text().trim();
-
-                    let lastUpdated = $('td:contains("Last updated")').next().text().trim(); 
+                    let lastUpdated = $('td:contains("Last updated")').next().text().trim();
                     lastUpdated  = enumerationDate.slice(0,10);
-
 
                     const row = [
                         pageUrl,
@@ -195,7 +179,15 @@ const getData = async () => {
                         authorizedOfficial,
                         enumerationDate,
                         lastUpdated
-                    ]
+                    ];
+
+                    const iterator = row.keys();
+
+                    for (const key of iterator) {
+                        if (row[key] === '' || row[key] === 'n/a') {
+                            row[key] = '-'
+                        }
+                    }
 
                     csvWriter.writeRecords([row])       // returns a promise
                         .then(() => console.log('add item', [row]))
@@ -217,7 +209,7 @@ const getData = async () => {
 };
 
 const main = async () => {
-     await getListings();
+    await getListings();
     await getData();
     console.log('Scraping Completed !!!');
 };
