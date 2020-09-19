@@ -103,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-5.csv' ,
+        path: './results/results-CA-6.csv' ,
         append: true
     });
 
@@ -149,8 +149,6 @@ const getData = async () => {
                     // const authorizedOfficial = otherElement.find('table > tbody > tr:nth-child(4) > td').last().text().trim();
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim(); 
                     
-                    // console.log(' 144-  temp_authorizedOfficial = ', temp_authorizedOfficial ); 
-
                     // const authorizedOfficial = toTitleCase(temp_authorizedOfficial);
                     // const authorizedOfficial = temp_authorizedOfficial;
 
@@ -159,7 +157,10 @@ const getData = async () => {
 
                     // const authorizedOfficial = titleCase(temp_authorizedOfficial);
                     console.log('158-  authorizedOfficial = ', authorizedOfficial ); 
-                    
+            
+                    authorizedOfficial = titleCase(authorizedOfficial );
+                    console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
+
                     const enumerationDate = otherElement.find('table > tbody > tr:nth-child(7) > td').last().text().trim();
                     const lastUpdated = otherElement.find('table > tbody > tr:nth-child(8) > td').last().text().trim();
 
