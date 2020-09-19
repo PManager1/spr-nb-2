@@ -103,7 +103,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-4.csv' ,
+        path: './results/results-CA-5.csv' ,
         append: true
     });
 
@@ -154,8 +154,9 @@ const getData = async () => {
                     // const authorizedOfficial = toTitleCase(temp_authorizedOfficial);
                     // const authorizedOfficial = temp_authorizedOfficial;
 
-                    const authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
-                    
+                    let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
+                        // authorizedOfficial = toTitleCase(temp_authorizedOfficial);
+
                     // const authorizedOfficial = titleCase(temp_authorizedOfficial);
                     console.log('158-  authorizedOfficial = ', authorizedOfficial ); 
                     
