@@ -39,3 +39,9 @@ Non Emergency -
 https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/
 
 It it shows all '-',  check  //console.log('131-bodyHTML=', bodyHTML); 
+
+
+ISSUES  = 
+It stops working when it dont find authorized person rather than that it has sole propertiety 
+Example URL - 
+https://npidb.org/doctors/transportation_services/non-emergency-medical-transport-van_343900000x/1164770483.aspx

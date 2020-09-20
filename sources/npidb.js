@@ -131,6 +131,7 @@ const getData = async () => {
                     //console.log('131-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
 
+                    console.log('134- page pageUrl ' ,pageUrl); 
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
                     temp_companyName = temp_companyName.toString(); 
                     
@@ -138,14 +139,19 @@ const getData = async () => {
                     
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
+                    console.log('141- initial address', address);  
                     //    address = (JSON.parse('"' + address + '"'));
                        
                    address = address.replace(/(\r\n|\n|\r)/gm," ");
                    address = address.replace(/[^\x00-\x7F]/g, "");
                
-                   let address_titleCase = titleCase(address );
+                   address = address.replace(/\s+/g, " ");
 
-                    console.log( '139- address = ' , address ); 
+                   console.log('146- cleaned address ' ,address); 
+
+                   let address_titleCase = titleCase(address).trim();
+
+                    console.log( '139- address_titleCase = ' , address_titleCase ); 
 
                     let address_cap = address; 
                     let State = address_cap.split(',');
@@ -154,14 +160,14 @@ const getData = async () => {
                     State = State.substring(0, 2);
 
 
-                    let city = address.split(',');
-                    console.log('1-  city ', city ); 
-                    city = city[0].split(' ');  
-                    console.log('2-  city ', city ); 
+                    let city = address_titleCase.split(',');
+                    // console.log('1-  city ', city );
+                    city = city[0].split(' ');
+                    // console.log('2-  city ', city );
                     city = city[city.length - 1];
-                    console.log('3-  city ', city ); 
+                    // console.log('3-  city ', city );
                     city =  titleCase(city);
-                    console.log('4-  city ', city ); 
+                    // console.log('4-  city ', city );
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
@@ -174,6 +180,11 @@ const getData = async () => {
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
                     let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
 
+                    authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
+                    authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
+                
+                    authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
+ 
                     console.log('158-  authorizedOfficial = ', authorizedOfficial );
             
                     authorizedOfficial = titleCase(authorizedOfficial );
@@ -228,7 +239,7 @@ const getData = async () => {
 };
 
 const main = async () => {
-    await getListings();
+    // await getListings();
     await getData();
     console.log('Scraping Completed !!!');
 };
