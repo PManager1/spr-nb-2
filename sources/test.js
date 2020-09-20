@@ -6,7 +6,6 @@ const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
-
 function toTitleCase(str) {
     return str.replace(
         /\w\S*/g,
@@ -133,7 +132,7 @@ const getData = async () => {
                     temp_companyName = temp_companyName.toString(); 
                     
                     // const companyName = toTitleCase(temp_companyName);
-                    let companyName =  temp_companyName; 
+                    const companyName = temp_companyName; 
                     
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
@@ -153,7 +152,7 @@ const getData = async () => {
                     let LBNLegalBusinessName = $('td:contains("LBN Legal business name")').next().text().trim();
 
                     //  LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
-                     LBNLegalBusinessName =  LBNLegalBusinessName; 
+                    LBNLegalBusinessName = LBNLegalBusinessName;
 
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
                     let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
@@ -161,6 +160,8 @@ const getData = async () => {
                     console.log('158-  authorizedOfficial = ', authorizedOfficial );
             
                     // authorizedOfficial = titleCase(authorizedOfficial );
+                    authorizedOfficial = authorizedOfficial;
+                    
                     console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
                     let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
