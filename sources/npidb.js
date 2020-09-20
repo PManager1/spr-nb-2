@@ -153,6 +153,7 @@ const getData = async () => {
                     State = State.trim(); 
                     State = State.substring(0, 2);
 
+                    
                     let city = address_cap.split(',');
                     console.log('1-  city ', city ); 
                     city = city[0].split(' ');  
