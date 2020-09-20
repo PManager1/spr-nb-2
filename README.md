@@ -27,3 +27,5 @@ https://phoenixnap.com/kb/install-latest-node-js-and-nmp-on-ubuntu#:~:text=Insta
 pupetter ubuntu fix for cannot open file 
 https://medium.com/@ssmak/how-to-fix-puppetteer-error-while-loading-shared-libraries-libx11-xcb-so-1-c1918b75acc3
 
+
+scp -i nbis.pem ubuntu@ec2-52-14-155-171.us-east-2.compute.amazonaws.com:/home/ubuntu/spr-nb/results/results-CA-18.csv Downloads/
