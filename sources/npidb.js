@@ -4,7 +4,8 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 
-let listingUrl = 'https://npidb.org/organizations/suppliers/department-of-veterans-affairs-va-pharmacy_332100000x';
+// let listingUrl = 'https://npidb.org/organizations/suppliers/department-of-veterans-affairs-va-pharmacy_332100000x';
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
 const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
     let listings = [];
@@ -103,6 +104,7 @@ const getData = async () => {
             try {
                 let x, pageUrl;
                 for (x=0; x<listings.length; x++) {
+                    console.log(' <> <> <> <> pageUrl number=', x ); 
                     pageUrl = listings[x];
                     await page.goto(pageUrl, {
                         timeout: 0,
@@ -138,7 +140,7 @@ const getData = async () => {
                     ]
 
                     csvWriter.writeRecords([row])       // returns a promise
-                        .then(() => console.log('add item'))
+                        .then(() => console.log('add item', [row]))
                         .catch(() => console.error());
 
                     await page.waitFor(2000)
