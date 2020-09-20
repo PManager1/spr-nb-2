@@ -3,8 +3,8 @@ const { initPuppeteer } = require('../puppeteer');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
 function toTitleCase(str) {
     return str.replace(
@@ -20,6 +20,7 @@ function titleCase(str) {
 
    }
 
+   
 
 const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
     let listings = [];
@@ -91,8 +92,6 @@ const getData = async () => {
         'Company Name',
         'Description',
         'Address',
-        'city',
-        'State',
         'Phone',
         'Website',
         'LBN Legal business name',
@@ -103,7 +102,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results.csv' ,
+        path: './results/results-CA-14.csv' ,
         append: true
     });
 
@@ -120,7 +119,6 @@ const getData = async () => {
             try {
                 let x, pageUrl;
                 for (x=0; x<listings.length; x++) {
-                    console.log(' <> <> <> <> pageUrl number=', x ); 
                     pageUrl = listings[x];
                     await page.goto(pageUrl, {
                         timeout: 0,
@@ -133,34 +131,19 @@ const getData = async () => {
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
                     temp_companyName = temp_companyName.toString(); 
                     
-                    const companyName = toTitleCase(temp_companyName);
+                    // const companyName = toTitleCase(temp_companyName);
+                    const companyName = temp_companyName; 
                     
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
                     //    address = (JSON.parse('"' + address + '"'));
                        
                    address = address.replace(/(\r\n|\n|\r)/gm," ");
-                   address = address.replace(/[^\x00-\x7F]/g, "");
-               
-                   let address_titleCase = titleCase(address );
+                   address = (JSON.parse('"' + address + '"'));
+
+                    //    address = titleCase(address );
 
                     console.log( '139- address = ' , address ); 
-
-                    let address_cap = address; 
-                    let State = address_cap.split(',');
-                    State = State[State.length - 1];
-                    State = State.trim(); 
-                    State = State.substring(0, 2);
-
-                    
-                    let city = address_titleCase.split(',');
-                    console.log('1-  city ', city ); 
-                    city = city[0].split(' ');  
-                    console.log('2-  city ', city ); 
-                    city = city[city.length - 1];
-                    console.log('3-  city ', city ); 
-                    city =  titleCase(city);
-                    console.log('4-  city ', city ); 
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
@@ -168,14 +151,17 @@ const getData = async () => {
 
                     let LBNLegalBusinessName = $('td:contains("LBN Legal business name")').next().text().trim();
 
-                     LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
+                    //  LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
+                    LBNLegalBusinessName = LBNLegalBusinessName;
 
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
                     let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
 
                     console.log('158-  authorizedOfficial = ', authorizedOfficial );
             
-                    authorizedOfficial = titleCase(authorizedOfficial );
+                    // authorizedOfficial = titleCase(authorizedOfficial );
+                    authorizedOfficial = authorizedOfficial;
+                    
                     console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
                     let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
@@ -188,9 +174,7 @@ const getData = async () => {
                         pageUrl,
                         companyName,
                         description,
-                        address_titleCase,
-                        city,
-                        State,
+                        address,
                         phone,
                         website,
                         LBNLegalBusinessName,
