@@ -128,6 +128,7 @@ const getData = async () => {
                     });
 
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
+                    //console.log('131-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
 
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
@@ -152,8 +153,8 @@ const getData = async () => {
                     State = State.trim(); 
                     State = State.substring(0, 2);
 
-                    
-                    let city = address_titleCase.split(',');
+
+                    let city = address.split(',');
                     console.log('1-  city ', city ); 
                     city = city[0].split(' ');  
                     console.log('2-  city ', city ); 
