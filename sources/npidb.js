@@ -160,6 +160,8 @@ const getData = async () => {
                     console.log('2-  city ', city ); 
                     city = city[city.length - 1];
                     console.log('3-  city ', city ); 
+                    city =  titleCase(city);
+                    console.log('4-  city ', city ); 
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
