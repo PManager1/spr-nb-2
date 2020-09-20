@@ -23,8 +23,8 @@ const getSettings = async (launchSettings = {}) => (isDevelopment ? {
   // headless: !!HEADLESS,
   headless: true,
   slowMo: 100 || launchSettings.slowMo,
-  // executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-  executablePath: './node_modules/puppeteer/.local-chromium/linux-722234/chrome-linux/chrome',
+  executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  // executablePath: './node_modules/puppeteer/.local-chromium/linux-722234/chrome-linux/chrome',
 } : {
   args: chromium.args,
   defaultViewport: chromium.defaultViewport,

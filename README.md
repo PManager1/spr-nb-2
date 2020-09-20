@@ -28,7 +28,14 @@ pupetter ubuntu fix for cannot open file
 https://medium.com/@ssmak/how-to-fix-puppetteer-error-while-loading-shared-libraries-libx11-xcb-so-1-c1918b75acc3
 
 
+ssh -i "nbis.pem" ubuntu@ec2-52-14-155-171.us-east-2.compute.amazonaws.com
+
+Ubuntu to Mac 
 scp -i nbis.pem ubuntu@ec2-52-14-155-171.us-east-2.compute.amazonaws.com:/home/ubuntu/spr-nb/results/results-CA-14.csv ~/Downloads/
+
+Mac to Ubuntu 
+
+scp ~/Downloads/ -i nbis.pem ubuntu@ec2-52-14-155-171.us-east-2.compute.amazonaws.com:/home/ubuntu/spr-nb/sources/listings.txt 
 
 
 EMS - 
@@ -36,4 +43,9 @@ https://npidb.org/organizations/transportation_services/ambulance_341600000x/ca/
 
 Non Emergency - 
 https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/
+
+
+Undefined &  Null  check 
+https://stackoverflow.com/questions/5515310/is-there-a-standard-function-to-check-for-null-undefined-or-blank-variables-in
+
 
