@@ -105,7 +105,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-18.csv' ,
+        path: './results/results-CA-19.csv' ,
         append: true
     });
 
