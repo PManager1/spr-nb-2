@@ -105,7 +105,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-19.csv' ,
+        path: './results/results.csv' ,
         append: true
     });
 
@@ -154,11 +154,11 @@ const getData = async () => {
                     State = State.substring(0, 2);
 
                     let city = address_cap.split(',');
-                    city = city[0];
+                    console.log('1-  city ', city ); 
                     city = city[0].split(' ');  
-
+                    console.log('2-  city ', city ); 
                     city = city[city.length - 1];
-                    console.log('161-  city ', city ); 
+                    console.log('3-  city ', city ); 
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
