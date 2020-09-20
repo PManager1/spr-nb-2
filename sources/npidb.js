@@ -93,6 +93,8 @@ const getData = async () => {
         'Company Name',
         'Description',
         'Address',
+        'city',
+        'State',
         'Phone',
         'Website',
         'LBN Legal business name',
@@ -103,7 +105,7 @@ const getData = async () => {
 
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results-CA-14.csv' ,
+        path: './results/results-CA-18.csv' ,
         append: true
     });
 
@@ -132,19 +134,31 @@ const getData = async () => {
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
                     temp_companyName = temp_companyName.toString(); 
                     
-                    // const companyName = toTitleCase(temp_companyName);
-                    let companyName =  temp_companyName; 
+                    const companyName = toTitleCase(temp_companyName);
                     
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
                     //    address = (JSON.parse('"' + address + '"'));
                        
                    address = address.replace(/(\r\n|\n|\r)/gm," ");
-                   address = (JSON.parse('"' + address + '"'));
-
-                    //    address = titleCase(address );
+                   address = address.replace(/[^\x00-\x7F]/g, "");
+               
+                   let address_titleCase = titleCase(address );
 
                     console.log( '139- address = ' , address ); 
+
+                    let address_cap = address; 
+                    let State = address_cap.split(',');
+                    State = State[State.length - 1];
+                    State = State.trim(); 
+                    State = State.substring(0, 2);
+
+                    let city = address_cap.split(',');
+                    city = city[0];
+                    city = city[0].split(' ');  
+
+                    city = city[city.length - 1];
+                    console.log('161-  city ', city ); 
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
@@ -152,15 +166,14 @@ const getData = async () => {
 
                     let LBNLegalBusinessName = $('td:contains("LBN Legal business name")').next().text().trim();
 
-                    //  LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
-                     LBNLegalBusinessName =  LBNLegalBusinessName; 
+                     LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
 
                     const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
                     let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
 
                     console.log('158-  authorizedOfficial = ', authorizedOfficial );
             
-                    // authorizedOfficial = titleCase(authorizedOfficial );
+                    authorizedOfficial = titleCase(authorizedOfficial );
                     console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
                     let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
@@ -173,7 +186,9 @@ const getData = async () => {
                         pageUrl,
                         companyName,
                         description,
-                        address,
+                        address_titleCase,
+                        city,
+                        State,
                         phone,
                         website,
                         LBNLegalBusinessName,
