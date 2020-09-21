@@ -4,8 +4,11 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
 // let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
+// NEMT - CA
+// let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ca/'; 
 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ca/'; 
+// NEMT - TX - 
+let listingUrl = 'https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/tx/'; 
 
 function toTitleCase(str) {
     return str.replace(
@@ -130,14 +133,18 @@ const getData = async () => {
                     });
 
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
-                    console.log('131-bodyHTML=', bodyHTML); 
+                    // console.log('131-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
 
                     console.log('134- page pageUrl ' ,pageUrl); 
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
                     temp_companyName = temp_companyName.toString(); 
                     
-                    const companyName = toTitleCase(temp_companyName);
+                    let companyName = toTitleCase(temp_companyName);
+
+                    // Jay- new to replace any multiple whitespaces with just one. 
+                    //  temp_companyName = temp_companyName.replace(/\s\s+/g, ' ');
+                        companyName =  companyName.replace(/  +/g, ' ');
                     
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
@@ -181,14 +188,6 @@ const getData = async () => {
 
                     let temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
 
-                    
-                    // let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
-                    // authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
-                    // authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
-                    // authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
-                    // console.log('158-  authorizedOfficial = ', authorizedOfficial );
-                    // authorizedOfficial = titleCase(authorizedOfficial );
-                    // console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
                     let authorizedOfficial, OrganizationOrSole; 
                     if (temp_authorizedOfficial){
@@ -270,3 +269,6 @@ const main = async () => {
 main()
     .then(value => console.log(value))
     .catch(console.error)
+
+    // CA NEMT 
+    // TX NEMT
