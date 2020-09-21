@@ -186,7 +186,6 @@ const getData = async () => {
                     authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
  
                     console.log('158-  authorizedOfficial = ', authorizedOfficial );
-            
                     authorizedOfficial = titleCase(authorizedOfficial );
                     console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
 
