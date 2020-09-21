@@ -3,8 +3,9 @@ const { initPuppeteer } = require('../puppeteer');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
+// let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ca/'; 
 
 function toTitleCase(str) {
     return str.replace(
@@ -98,7 +99,8 @@ const getData = async () => {
         'LBN Legal business name',
         'Authorized official',
         'Enumeration date',
-        'Last updated'
+        'Last updated',
+        'OrganizationOrSole',
     ]
 
     const csvWriter = createCsvWriter({
@@ -177,17 +179,38 @@ const getData = async () => {
 
                      LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
 
-                    const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
-                    let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
+                    let temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
 
-                    authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
-                    authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
-                
-                    authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
- 
-                    console.log('158-  authorizedOfficial = ', authorizedOfficial );
-                    authorizedOfficial = titleCase(authorizedOfficial );
-                    console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
+                    
+                    // let authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
+                    // authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
+                    // authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
+                    // authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
+                    // console.log('158-  authorizedOfficial = ', authorizedOfficial );
+                    // authorizedOfficial = titleCase(authorizedOfficial );
+                    // console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
+
+                    let authorizedOfficial, OrganizationOrSole; 
+                    if (temp_authorizedOfficial){
+                            authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
+                            authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
+                            authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
+                            authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
+                            
+                            authorizedOfficial = titleCase(authorizedOfficial );
+                            console.log('192-  authorizedOfficial = ', authorizedOfficial );
+                            OrganizationOrSole = 'Org'; 
+                            // console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
+                    }else {
+                        console.log(' <><><> SOLE PROPRIETER <><><>');
+                        authorizedOfficial = 's-'+ companyName +'-'+  $('td:contains("Status")').next().text().trim();
+                        // continue; 
+                        OrganizationOrSole = 'Sole'; 
+                    }
+
+
+
+
 
                     let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
                     enumerationDate  = enumerationDate.slice(0,10);
@@ -207,7 +230,8 @@ const getData = async () => {
                         LBNLegalBusinessName,
                         authorizedOfficial,
                         enumerationDate,
-                        lastUpdated
+                        lastUpdated,
+                        OrganizationOrSole,
                     ];
 
                     const iterator = row.keys();

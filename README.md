@@ -1,6 +1,8 @@
 -run npm install
 -run node sources/npidb.js
 
+Add type = EMT / NEMT
+
 Address char string has to be fixed, it has some weird Characters ÄÇ coming 
 
 City column is left. 
