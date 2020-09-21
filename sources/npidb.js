@@ -130,7 +130,7 @@ const getData = async () => {
                     });
 
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
-                    //console.log('131-bodyHTML=', bodyHTML); 
+                    console.log('131-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
 
                     console.log('134- page pageUrl ' ,pageUrl); 
@@ -216,7 +216,7 @@ const getData = async () => {
                     enumerationDate  = enumerationDate.slice(0,10);
 
                     let lastUpdated = $('td:contains("Last updated")').next().text().trim();
-                    lastUpdated  = enumerationDate.slice(0,10);
+                    lastUpdated  = lastUpdated.slice(0,10);
 
                     const row = [
                         pageUrl,
