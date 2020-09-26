@@ -161,25 +161,25 @@ const getData = async () => {
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
                     // console.log('136-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
-
                     console.log('134- page pageUrl ' ,pageUrl); 
                     let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
                     temp_companyName = temp_companyName.toString(); 
-                    
                     let companyName = toTitleCase(temp_companyName);
-
                     companyName =  companyName.replace(/  +/g, ' '); 
-                    
                     //  Status code 
                     let tempLowerCompanyName = companyName.toLowerCase();
                     let temp_Status = CompanyNameContains (tempLowerCompanyName); 
                     let Status; 
-                   
                     if (temp_Status === true) {
                         Status = 'Govt';
                     } else {
                         Status = 'New';
                     }
+                    // REMOVING THE LBN SHIT tabs- 
+                    console.log('185- companyName = ' , companyName);
+                    companyName = companyName.replace(/(\r\n|\n|\r)/gm," ");
+                    companyName = companyName.replace(/[^\x00-\x7F]/g, "");
+                    companyName = companyName.replace(/\s+/g, " ");
 
                     // Jay- new to replace any multiple whitespaces with just one. 
                     //  temp_companyName = temp_companyName.replace(/\s\s+/g, ' ');
