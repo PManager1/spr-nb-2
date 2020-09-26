@@ -3,12 +3,70 @@ const { initPuppeteer } = require('../puppeteer');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
-// let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
-// NEMT - CA
-// let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ca/'; 
+// let AmbType = '-N-'; 
+// let AmbType = '-E';
 
-// NEMT - TX - 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/tx/'; 
+// NY
+
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ny/';
+
+
+// West Virginia 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/wv/
+
+// NJ 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/nj/
+
+// Ohio 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/oh/
+// Illio 
+//https://npidb.org/organizations/transportation_services/ambulance_341600000x/il/
+// Indiana 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/in/
+
+// Michigan 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/mi/
+
+// TN 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/tn/
+
+// Iowa 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ia/
+
+// NY 
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ny/
+
+// Georgia
+// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
+
+// NC   https://npidb.org/organizations/transportation_services/ambulance_341600000x/nc/
+
+// FL https://npidb.org/organizations/transportation_services/ambulance_341600000x/fl/
+
+// Illionois - https://npidb.org/organizations/transportation_services/ambulance_341600000x/il/
+
+
+
+
+// N - c -
+
+
+// let listingUrl = 'https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/co/'; 
+
+// E - CO - 
+//  'https://npidb.org/organizations/transportation_services/ambulance_341600000x/co/'; 
+
+// N - AZ -  https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/az/
+// E - AZ -  https://npidb.org/organizations/transportation_services/ambulance_341600000x/az/
+
+// NEMT - WA
+// EMT - WA
+
+// NEMT - NE  https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/nv/
+// EMT - NE https://npidb.org/organizations/transportation_services/ambulance_341600000x/nv/
+
+// NEMT - NE
+// EMT - NE
 
 function toTitleCase(str) {
     return str.replace(
@@ -105,10 +163,10 @@ const getData = async () => {
         'Last updated',
         'OrganizationOrSole',
     ]
-
+// fileoutput
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/results.csv' ,
+        path: './results/NY-EMT.csv' ,
         append: true
     });
 
@@ -133,7 +191,7 @@ const getData = async () => {
                     });
 
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
-                    // console.log('131-bodyHTML=', bodyHTML); 
+                    // console.log('136-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
 
                     console.log('134- page pageUrl ' ,pageUrl); 
@@ -144,8 +202,8 @@ const getData = async () => {
 
                     // Jay- new to replace any multiple whitespaces with just one. 
                     //  temp_companyName = temp_companyName.replace(/\s\s+/g, ' ');
-                        companyName =  companyName.replace(/  +/g, ' ');
-                    
+                        companyName =  companyName.replace(/  +/g, ' '); 
+
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
                     console.log('141- initial address', address);  
@@ -170,13 +228,9 @@ const getData = async () => {
 
 
                     let city = address_titleCase.split(',');
-                    // console.log('1-  city ', city );
                     city = city[0].split(' ');
-                    // console.log('2-  city ', city );
                     city = city[city.length - 1];
-                    // console.log('3-  city ', city );
                     city =  titleCase(city);
-                    // console.log('4-  city ', city );
 
                     // console.log( '139- address = ' , address ); 
                     const phone = $("span[itemprop='telephone']").text().trim();
@@ -261,7 +315,7 @@ const getData = async () => {
 };
 
 const main = async () => {
-    // await getListings();
+    await getListings(); 
     await getData();
     console.log('Scraping Completed !!!');
 };
@@ -269,6 +323,3 @@ const main = async () => {
 main()
     .then(value => console.log(value))
     .catch(console.error)
-
-    // CA NEMT 
-    // TX NEMT
