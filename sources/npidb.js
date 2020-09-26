@@ -3,70 +3,37 @@ const { initPuppeteer } = require('../puppeteer');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
-// let AmbType = '-N-'; 
-// let AmbType = '-E';
 
-// NY
+function CompanyNameContains(str){ 
+    if (str.includes("rescue") || str.includes("volunteer") || str.includes("fire") || str.includes("police") || str.includes("county") || str.includes("city")  || str.includes("town") || str.includes("village") || str.includes("community") || str.includes("corps")  ){
+        console.log(' yes it containes '); 
+        return true; 
+    } else{
+        return false;
+    }
+}
 
-let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ny/';
+//  next ILL
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/pa/';
 
+/// PEN - https://npidb.org/organizations/transportation_services/ambulance_341600000x/pa/
+// IN - https://npidb.org/organizations/transportation_services/ambulance_341600000x/in/
+// IOWAS - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ia/
+// KENTUCKY - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ky/
+// BOston - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ma/
+// Michigan - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mi/
+// Minnesota - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mn/
+// Missouri - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mo/
+// new Hampshire  - https://npidb.org/organizations/transportation_services/ambulance_341600000x/nh/
+// North Carolina - https://npidb.org/organizations/transportation_services/ambulance_341600000x/nc/
+// FL - https://npidb.org/organizations/transportation_services/ambulance_341600000x/fl/
+// GA -  https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
 
-// West Virginia 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/wv/
-
-// NJ 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/nj/
-
-// Ohio 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/oh/
-// Illio 
-//https://npidb.org/organizations/transportation_services/ambulance_341600000x/il/
-// Indiana 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/in/
-
-// Michigan 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/mi/
-
-// TN 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/tn/
-
-// Iowa 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ia/
-
-// NY 
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ny/
-
-// Georgia
-// https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
-
-// NC   https://npidb.org/organizations/transportation_services/ambulance_341600000x/nc/
-
-// FL https://npidb.org/organizations/transportation_services/ambulance_341600000x/fl/
-
-// Illionois - https://npidb.org/organizations/transportation_services/ambulance_341600000x/il/
+// NEMT- 
+// fl: https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/fl/
+// CO - https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/co/
 
 
-
-
-// N - c -
-
-
-// let listingUrl = 'https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/co/'; 
-
-// E - CO - 
-//  'https://npidb.org/organizations/transportation_services/ambulance_341600000x/co/'; 
-
-// N - AZ -  https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/az/
-// E - AZ -  https://npidb.org/organizations/transportation_services/ambulance_341600000x/az/
-
-// NEMT - WA
-// EMT - WA
-
-// NEMT - NE  https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/nv/
-// EMT - NE https://npidb.org/organizations/transportation_services/ambulance_341600000x/nv/
-
-// NEMT - NE
-// EMT - NE
 
 function toTitleCase(str) {
     return str.replace(
@@ -156,6 +123,7 @@ const getData = async () => {
         'city',
         'State',
         'Phone',
+        'Status',
         'Website',
         'LBN Legal business name',
         'Authorized official',
@@ -163,10 +131,10 @@ const getData = async () => {
         'Last updated',
         'OrganizationOrSole',
     ]
-// fileoutput
+// new file output
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/NY-EMT.csv' ,
+        path: './results/PENN-Test--EMT.csv' ,
         append: true
     });
 
@@ -200,9 +168,22 @@ const getData = async () => {
                     
                     let companyName = toTitleCase(temp_companyName);
 
+                    companyName =  companyName.replace(/  +/g, ' '); 
+                    
+                    //  Status code 
+                    let tempLowerCompanyName = companyName.toLowerCase();
+                    let temp_Status = CompanyNameContains (tempLowerCompanyName); 
+                    let Status; 
+                   
+                    if (temp_Status === true) {
+                        Status = 'Govt';
+                    } else {
+                        Status = 'New';
+                    }
+
                     // Jay- new to replace any multiple whitespaces with just one. 
                     //  temp_companyName = temp_companyName.replace(/\s\s+/g, ' ');
-                        companyName =  companyName.replace(/  +/g, ' '); 
+                       
 
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
@@ -279,6 +260,7 @@ const getData = async () => {
                         city,
                         State,
                         phone,
+                        Status,
                         website,
                         LBNLegalBusinessName,
                         authorizedOfficial,
@@ -315,7 +297,7 @@ const getData = async () => {
 };
 
 const main = async () => {
-    await getListings(); 
+    // await getListings(); 
     await getData();
     console.log('Scraping Completed !!!');
 };
