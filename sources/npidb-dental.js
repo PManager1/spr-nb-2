@@ -13,12 +13,10 @@ function CompanyNameContains(str){
     }
 }
 
+// dental -  https://npidb.org/organizations/ambulatory_health_care/dental_261qd0000x/
 
 
-// utah - https://npidb.org/organizations/ambulatory_health_care/dental_261qd0000x/ut/
-// CA lab - 
-
-let listingUrl = 'https://npidb.org/doctors/dental_health/dentist_122300000x/co/';
+let listingUrl = 'https://npidb.org/organizations/ambulatory_health_care/dental_261qd0000x/ca/';
 // nc 
 
 // ga  https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
@@ -141,7 +139,7 @@ const getData = async () => {
 // new file output
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/DENTAL/CO.csv' ,
+        path: './results/CA--DENTAL-CARE.csv' ,
         append: true
     });
 

@@ -3,59 +3,28 @@ const { initPuppeteer } = require('../puppeteer');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
+// EMT
+let listingUrl = 'https://npidb.org/organizations/transportation_services/ambulance_341600000x/ak/';
 
-function CompanyNameContains(str){ 
-    if (str.includes("rescue") || str.includes("volunteer") || str.includes("fire") || str.includes("police") || str.includes("county") || str.includes("city")  || str.includes("town") || str.includes("village") || str.includes("community") || str.includes("corps")  ){
-        console.log(' yes it containes '); 
-        return true; 
-    } else{
-        return false;
-    }
-}
+// NEMT
+// let listingUrl = 'https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/ca/';
 
 
-
-// utah - https://npidb.org/organizations/ambulatory_health_care/dental_261qd0000x/ut/
-// CA lab - 
-
-let listingUrl = 'https://npidb.org/doctors/dental_health/dentist_122300000x/co/';
-// nc 
-
-// ga  https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
-
-/// PEN - https://npidb.org/organizations/transportation_services/ambulance_341600000x/pa/
-// IN - https://npidb.org/organizations/transportation_services/ambulance_341600000x/in/
-// IOWAS - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ia/
-// KENTUCKY - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ky/
-// BOston - https://npidb.org/organizations/transportation_services/ambulance_341600000x/ma/
-// Michigan - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mi/
-// Minnesota - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mn/
-// Missouri - https://npidb.org/organizations/transportation_services/ambulance_341600000x/mo/
-// new Hampshire  - https://npidb.org/organizations/transportation_services/ambulance_341600000x/nh/
-// North Carolina - https://npidb.org/organizations/transportation_services/ambulance_341600000x/nc/
-// FL - https://npidb.org/organizations/transportation_services/ambulance_341600000x/fl/
-// GA -  https://npidb.org/organizations/transportation_services/ambulance_341600000x/ga/
-
-// NEMT- 
-// fl: https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/fl/
-// CO - https://npidb.org/organizations/transportation_services/non-emergency-medical-transport-van_343900000x/co/
-
-
-
-function toTitleCase(str) {
-    return str.replace(
-        /\w\S*/g,
-        function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
-    );
-}
+// function toTitleCase(str) {
+//     return str.replace(
+//         /\w\S*/g,
+//         function(txt) {
+//             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+//         }
+//     );
+// }
 
 function titleCase(str) {
     return str.toLowerCase().split(' ').map(function(val) { return val.replace(val[0], val[0].toUpperCase()); }).join(' ');
 
    }
 
+   
 
 const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
     let listings = [];
@@ -96,6 +65,7 @@ const getListings = async (address, searchTerm, pageUrl=listingUrl) => {
                     const nextPageLink = $(".pagination > li").last().find('a').attr('href');
                     if (nextPageLink === undefined || nextPageLink === '#')
                         break;
+                        // continue;
                     pageUrl = 'https://npidb.org' + nextPageLink;
 
                     await page.goto(pageUrl, {
@@ -130,18 +100,16 @@ const getData = async () => {
         'city',
         'State',
         'Phone',
-        'Status',
         'Website',
         'LBN Legal business name',
         'Authorized official',
         'Enumeration date',
-        'Last updated',
-        'OrganizationOrSole',
+        'Last updated'
     ]
-// new file output
+
     const csvWriter = createCsvWriter({
         header: header,
-        path: './results/DENTAL/CO.csv' ,
+        path: './results/results.csv' ,
         append: true
     });
 
@@ -165,48 +133,36 @@ const getData = async () => {
                         waitUntil: 'networkidle0',
                     });
 
+                    console.log('131-  pageUrl = ', pageUrl );
+
                     let bodyHTML = await page.evaluate(() => document.body.innerHTML);
-                    // console.log('136-bodyHTML=', bodyHTML); 
                     let $ = cheerio.load(bodyHTML);
-                    console.log('134- page pageUrl ' ,pageUrl); 
-                    let temp_companyName = $('.page-header > h1').text().trim(); //.toTitleCase();
-                    temp_companyName = temp_companyName.toString(); 
-                    let companyName = toTitleCase(temp_companyName);
-                    companyName =  companyName.replace(/  +/g, ' '); 
-                    //  Status code 
-                    let tempLowerCompanyName = companyName.toLowerCase();
-                    let temp_Status = CompanyNameContains (tempLowerCompanyName); 
-                    let Status; 
-                    if (temp_Status === true) {
-                        Status = 'Govt';
-                    } else {
-                        Status = 'New';
-                    }
-                    // REMOVING THE LBN SHIT tabs- 
-                    console.log('185- companyName = ' , companyName);
-                    companyName = companyName.replace(/(\r\n|\n|\r)/gm," ");
-                    companyName = companyName.replace(/[^\x00-\x7F]/g, "");
-                    companyName = companyName.replace(/\s+/g, " ");
 
-                    // Jay- new to replace any multiple whitespaces with just one. 
-                    //  temp_companyName = temp_companyName.replace(/\s\s+/g, ' ');
-                       
-
+                    let temp_companyName = $('.page-header > h1').text().trim(); 
+                    // temp_companyName = temp_companyName.toString(); 
+                    console.log(' 143 - temp_companyName=', temp_companyName ); 
+                    // const companyName = titleCase(temp_companyName);
+                        let companyName = temp_companyName;
+                    console.log(' 147 - Never reached here ', companyName); 
+                    
                     const description = $('.page-header > p').text().trim();
                     let address = $('address').text().trim();
-                    console.log('141- initial address', address);  
                     //    address = (JSON.parse('"' + address + '"'));
                        
                    address = address.replace(/(\r\n|\n|\r)/gm," ");
                    address = address.replace(/[^\x00-\x7F]/g, "");
                
-                   address = address.replace(/\s+/g, " ");
+                   let   address_titleCase = ''; 
+                //    if (address !== undefined || address !== null) {                    
+                    if (address){
+                         address_titleCase = titleCase(address );
+                        } else {
+                            address_titleCase =  '-';  
+                    }
 
-                   console.log('146- cleaned address ' ,address); 
 
-                   let address_titleCase = titleCase(address).trim();
-
-                    console.log( '139- address_titleCase = ' , address_titleCase ); 
+                  
+                    // console.log( '139- address = ' , address ); 
 
                     let address_cap = address; 
                     let State = address_cap.split(',');
@@ -214,47 +170,75 @@ const getData = async () => {
                     State = State.trim(); 
                     State = State.substring(0, 2);
 
-
+                    
                     let city = address_titleCase.split(',');
-                    city = city[0].split(' ');
+                    // console.log('1-  city ', city ); 
+                    city = city[0].split(' ');  
+                    // console.log('2-  city ', city ); 
                     city = city[city.length - 1];
+                    // console.log('3-  city ', city ); 
                     city =  titleCase(city);
+                    // console.log('4-  city ', city ); 
 
                     // console.log( '139- address = ' , address ); 
-                    const phone = $("span[itemprop='telephone']").text().trim();
-                    const website = $("span[itemprop='website']").text().trim();
+                    let phone = $("span[itemprop='telephone']").text().trim();
+                    console.log('180-  phone = ', phone ); 
+                    
+                    let website = $("span[itemprop='website']").text().trim();
+                    console.log('182-  website = ', website );
 
                     let LBNLegalBusinessName = $('td:contains("LBN Legal business name")').next().text().trim();
 
-                     LBNLegalBusinessName = toTitleCase(LBNLegalBusinessName);
+                    //  if (LBNLegalBusinessName !== undefined || LBNLegalBusinessName !== null) {
+                        if (LBNLegalBusinessName ) { 
+                        console.log('189-  LBNLegalBusinessName =', LBNLegalBusinessName );                    
+                        LBNLegalBusinessName = titleCase(LBNLegalBusinessName);
+                        console.log('191-  LBNLegalBusinessName =', LBNLegalBusinessName );                    
+                    } else {
+                        LBNLegalBusinessName = '-';    
+                        console.log('193-  LBNLegalBusinessName =', LBNLegalBusinessName );                    
+                       }
 
-                    let temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
+                    console.log('197- outside if else LBNLegalBusinessName = '); 
+                       
+                     console.log('197- before  temp_authorizedOfficial = ');
+                    const temp_authorizedOfficial = $('td:contains("Authorized official")').next().text().trim();
+                    
+                    let authorizedOfficial; // = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
 
-
-                    let authorizedOfficial, OrganizationOrSole; 
-                    if (temp_authorizedOfficial){
-                            authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");
-                            authorizedOfficial = authorizedOfficial.replace(/(\r\n|\n|\r)/gm," ");
-                            authorizedOfficial = authorizedOfficial.replace(/[^\x00-\x7F]/g, "");
-                            authorizedOfficial = authorizedOfficial.replace(/\s+/g, " ");
-                            
+                        console.log('200-  authorizedOfficial = ' );
+                
+                            if (temp_authorizedOfficial ) { 
+                            authorizedOfficial = temp_authorizedOfficial.replace(/(\r\n|\n|\r)/gm,"");                   
                             authorizedOfficial = titleCase(authorizedOfficial );
-                            console.log('192-  authorizedOfficial = ', authorizedOfficial );
-                            OrganizationOrSole = 'Org'; 
-                            // console.log('162-  authorizedOfficial = ', authorizedOfficial ); 
-                    }else {
-                        console.log(' <><><> SOLE PROPRIETER <><><>');
-                        authorizedOfficial = 's-'+ companyName +'-'+  $('td:contains("Status")').next().text().trim();
-                        // continue; 
-                        OrganizationOrSole = 'Sole'; 
-                    }
-
+                            console.log('209- authorizedOfficial = ', authorizedOfficial); 
+                         } else {
+                             authorizedOfficial = '-';
+                            }
+                   
+                    console.log('205-  authorizedOfficial = ', authorizedOfficial ); 
 
                     let enumerationDate = $('td:contains("Enumeration date")').next().text().trim();
-                    enumerationDate  = enumerationDate.slice(0,10);
+
+                    // if (enumerationDate !== undefined || enumerationDate !== null) {                    
+                        if (enumerationDate) {   
+                        enumerationDate  = enumerationDate.slice(0,10);
+                   } else {
+                        enumerationDate  = '-';
+                   }
+
+                   console.log('215-  enumerationDate = ', enumerationDate ); 
 
                     let lastUpdated = $('td:contains("Last updated")').next().text().trim();
-                    lastUpdated  = lastUpdated.slice(0,10);
+                    
+                    // if (lastUpdated !== undefined || lastUpdated !== null) {                    
+                        if (lastUpdated) {   
+                        lastUpdated  = enumerationDate.slice(0,10);
+                   } else {
+                        lastUpdated  = '-';
+                   }
+
+                   console.log('255-  lastUpdated = ', lastUpdated ); 
 
                     const row = [
                         pageUrl,
@@ -264,24 +248,24 @@ const getData = async () => {
                         city,
                         State,
                         phone,
-                        Status,
                         website,
                         LBNLegalBusinessName,
                         authorizedOfficial,
                         enumerationDate,
-                        lastUpdated,
-                        OrganizationOrSole,
+                        lastUpdated
                     ];
 
                     const iterator = row.keys();
 
                     for (const key of iterator) {
+                        console.log('254- <><> iterator <><> =', iterator ); 
                         if (row[key] === '' || row[key] === 'n/a') {
                             row[key] = '-'
                         }
                     }
 
                     csvWriter.writeRecords([row])       // returns a promise
+                        
                         .then(() => console.log('add item', [row]))
                         .catch(() => console.error());
 
@@ -301,7 +285,7 @@ const getData = async () => {
 };
 
 const main = async () => {
-    await getListings(); 
+    await getListings();
     await getData();
     console.log('Scraping Completed !!!');
 };
@@ -309,3 +293,4 @@ const main = async () => {
 main()
     .then(value => console.log(value))
     .catch(console.error)
+
